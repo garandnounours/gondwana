@@ -4,9 +4,10 @@ const API_BASE_URL = (() => {
     
     // GitHub Codespaces detection
     if (hostname.includes('github.dev') || hostname.includes('codespaces')) {
-        // In Codespaces, replace the port in the current URL with 8000
-        const currentUrl = window.location.origin;
-        return currentUrl.replace(/:\d+$/, ':8000');
+        // In Codespaces, replace the port number in the hostname with 8000
+        const protocol = window.location.protocol;
+        const newHostname = hostname.replace(/-\d+\./, '-8000.');
+        return `${protocol}//${newHostname}`;
     }
     
     // Local development
@@ -16,6 +17,8 @@ const API_BASE_URL = (() => {
 // Debug: Log the API URL being used
 console.log('🔧 API_BASE_URL:', API_BASE_URL);
 console.log('🌐 Current location:', window.location.href);
+console.log('🏠 Hostname:', window.location.hostname);
+console.log('🎯 Expected API URL:', `${API_BASE_URL}/api/rates`);
 
 // DOM Elements
 const bookingForm = document.getElementById('bookingForm');
