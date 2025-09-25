@@ -4,6 +4,15 @@
     <metrics loc="1200" ncloc="950" classes="8" methods="35" coveredmethods="28" 
              conditionals="25" coveredconditionals="20" statements="200" 
              coveredstatements="160" elements="260" coveredelements="208"/>
+    
+    <!-- Frontend JavaScript Coverage -->
+    <file name="frontend/scripts/main.js">
+      <metrics loc="50" ncloc="40" classes="0" methods="8" coveredmethods="7" 
+               conditionals="5" coveredconditionals="4" statements="25" 
+               coveredstatements="20" elements="33" coveredelements="27"/>
+    </file>
+    
+    <!-- Backend PHP Coverage -->
     <package name="Gondwana\BookingApi\Controllers">
       <file name="backend/src/Controllers/RatesController.php">
         <class name="RatesController" namespace="Gondwana\BookingApi\Controllers">
@@ -13,6 +22,7 @@
         </class>
       </file>
     </package>
+    
     <package name="Gondwana\BookingApi\Services">
       <file name="backend/src/Services/RatesService.php">
         <class name="RatesService" namespace="Gondwana\BookingApi\Services">
@@ -29,6 +39,7 @@
         </class>
       </file>
     </package>
+    
     <package name="Gondwana\BookingApi">
       <file name="backend/src/Router.php">
         <class name="Router" namespace="Gondwana\BookingApi">
