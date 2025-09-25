@@ -90,7 +90,7 @@ This project includes:
 - Code formatting and linting
 - Security best practices
 
-## Testing
+## Testing Stuff
 
 Test with the provided Unit Type IDs:
 - `-2147483637`
@@ -99,3 +99,6 @@ Test with the provided Unit Type IDs:
 ## Author
 
 Built as part of Gondwana Collections software developer application process.
+
+---
+*Application tested and ready for evaluation via GitHub Codespaces.*
