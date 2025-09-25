@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Backend Test</title>
+</head>
+<body>
+    <h1>Backend Connection Test</h1>
+    <button onclick="testBackend()">Test Backend Connection</button>
+    <div id="result"></div>
+
+    <script>
+        async function testBackend() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Testing...';
+            
+            try {
+                // Test the health endpoint
+                const response = await fetch('https://cautious-acorn-jvx4p74rvrqfp77v-8000.app.github.dev/api/health');
+                const data = await response.json();
+                resultDiv.innerHTML = `<p style="color: green;">✅ Backend is accessible!</p><pre>${JSON.stringify(data, null, 2)}</pre>`;
+            } catch (error) {
+                resultDiv.innerHTML = `<p style="color: red;">❌ Backend connection failed: ${error.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>

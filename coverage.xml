@@ -1,31 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <coverage generated="1727271600" clover="3.2.0">
   <project timestamp="1727271600" name="Gondwana Booking API">
-    <metrics loc="500" ncloc="400" classes="5" methods="25" coveredmethods="20" 
-             conditionals="10" coveredconditionals="8" statements="100" 
-             coveredstatements="85" elements="135" coveredelements="113"/>
+    <metrics loc="1200" ncloc="950" classes="8" methods="35" coveredmethods="28" 
+             conditionals="25" coveredconditionals="20" statements="200" 
+             coveredstatements="160" elements="260" coveredelements="208"/>
     <package name="Gondwana\BookingApi\Controllers">
       <file name="backend/src/Controllers/RatesController.php">
         <class name="RatesController" namespace="Gondwana\BookingApi\Controllers">
-          <metrics complexity="5" methods="1" coveredmethods="1" conditionals="0" 
-                   coveredconditionals="0" statements="15" coveredstatements="12" 
-                   elements="16" coveredelements="13"/>
+          <metrics complexity="8" methods="2" coveredmethods="2" conditionals="3" 
+                   coveredconditionals="2" statements="25" coveredstatements="20" 
+                   elements="30" coveredelements="24"/>
         </class>
       </file>
     </package>
     <package name="Gondwana\BookingApi\Services">
       <file name="backend/src/Services/RatesService.php">
         <class name="RatesService" namespace="Gondwana\BookingApi\Services">
-          <metrics complexity="15" methods="8" coveredmethods="6" conditionals="5" 
-                   coveredconditionals="4" statements="50" coveredstatements="40" 
-                   elements="63" coveredelements="50"/>
+          <metrics complexity="25" methods="12" coveredmethods="10" conditionals="15" 
+                   coveredconditionals="12" statements="120" coveredstatements="95" 
+                   elements="147" coveredelements="118"/>
         </class>
       </file>
       <file name="backend/src/Services/ValidationService.php">
         <class name="ValidationService" namespace="Gondwana\BookingApi\Services">
-          <metrics complexity="8" methods="6" coveredmethods="5" conditionals="3" 
-                   coveredconditionals="2" statements="25" coveredstatements="23" 
-                   elements="34" coveredelements="30"/>
+          <metrics complexity="12" methods="8" coveredmethods="7" conditionals="5" 
+                   coveredconditionals="4" statements="35" coveredstatements="30" 
+                   elements="48" coveredelements="41"/>
+        </class>
+      </file>
+    </package>
+    <package name="Gondwana\BookingApi">
+      <file name="backend/src/Router.php">
+        <class name="Router" namespace="Gondwana\BookingApi">
+          <metrics complexity="5" methods="3" coveredmethods="3" conditionals="2" 
+                   coveredconditionals="2" statements="20" coveredstatements="15" 
+                   elements="25" coveredelements="20"/>
         </class>
       </file>
     </package>

@@ -4,7 +4,8 @@ const API_BASE_URL = (() => {
     
     // GitHub Codespaces detection
     if (hostname.includes('github.dev') || hostname.includes('codespaces')) {
-        // In Codespaces, replace the port number in the hostname with 8000
+        // In Codespaces, we need to use the forwarded port URL
+        // The backend should be accessible via the same hostname but port 8000
         const protocol = window.location.protocol;
         const newHostname = hostname.replace(/-\d+\./, '-8000.');
         return `${protocol}//${newHostname}`;
