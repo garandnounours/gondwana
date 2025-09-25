@@ -12,11 +12,26 @@ class ValidationService
     {
         $errors = [];
 
-        // Validate Unit Name
+        $this->validateUnitName($data, $errors);
+        $this->validateDates($data, $errors);
+        $this->validateOccupants($data, $errors);
+        $this->validateAges($data, $errors);
+
+        return [
+            'valid' => empty($errors),
+            'errors' => $errors
+        ];
+    }
+
+    private function validateUnitName(array $data, array &$errors): void
+    {
         if (!isset($data[self::UNIT_NAME_KEY]) || !is_string($data[self::UNIT_NAME_KEY]) || empty(trim($data[self::UNIT_NAME_KEY]))) {
             $errors[] = 'Unit Name is required and must be a non-empty string';
         }
+    }
 
+    private function validateDates(array $data, array &$errors): void
+    {
         // Validate Arrival date
         if (!isset($data['Arrival']) || !$this->isValidDateFormat($data['Arrival'], self::DATE_FORMAT_DM_Y)) {
             $errors[] = 'Arrival date is required and must be in dd/mm/yyyy format';
@@ -36,30 +51,33 @@ class ValidationService
                 $errors[] = 'Departure date must be after arrival date';
             }
         }
+    }
 
-        // Validate Occupants
+    private function validateOccupants(array $data, array &$errors): void
+    {
         if (!isset($data['Occupants']) || !is_int($data['Occupants']) || $data['Occupants'] < 1) {
             $errors[] = 'Occupants is required and must be a positive integer';
         }
+    }
 
-        // Validate Ages array
+    private function validateAges(array $data, array &$errors): void
+    {
         if (!isset($data['Ages']) || !is_array($data['Ages'])) {
             $errors[] = 'Ages is required and must be an array';
-        } elseif (count($data['Ages']) !== $data['Occupants']) {
-            $errors[] = 'Number of ages must match number of occupants';
-        } else {
-            foreach ($data['Ages'] as $age) {
-                if (!is_int($age) || $age < 0 || $age > 120) {
-                    $errors[] = 'All ages must be integers between 0 and 120';
-                    break;
-                }
-            }
+            return;
         }
 
-        return [
-            'valid' => empty($errors),
-            'errors' => $errors
-        ];
+        if (count($data['Ages']) !== $data['Occupants']) {
+            $errors[] = 'Number of ages must match number of occupants';
+            return;
+        }
+
+        foreach ($data['Ages'] as $age) {
+            if (!is_int($age) || $age < 0 || $age > 120) {
+                $errors[] = 'All ages must be integers between 0 and 120';
+                break;
+            }
+        }
     }
 
     private function isValidDateFormat(string $date, string $format): bool

@@ -4,6 +4,7 @@ namespace Gondwana\BookingApi\Services;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
+use Gondwana\BookingApi\Exceptions\ApiException;
 
 class RatesService
 {
@@ -79,10 +80,10 @@ class RatesService
                             $results[] = $processedResult;
                             $success = true; // Mark as successful
                         } else {
-                            throw new \Exception("Invalid JSON response from Gondwana API");
+                            throw new ApiException("Invalid JSON response from Gondwana API");
                         }
                     } else {
-                        throw new \Exception("HTTP {$statusCode}: " . substr($responseBody, 0, 200));
+                        throw new ApiException("HTTP {$statusCode}: " . substr($responseBody, 0, 200), $responseBody);
                     }
                 } catch (RequestException $e) {
                     $retryCount++;

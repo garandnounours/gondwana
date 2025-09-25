@@ -2,6 +2,8 @@
 
 namespace Gondwana\BookingApi;
 
+use Gondwana\BookingApi\Exceptions\RouteException;
+
 class Router
 {
     private array $routes = [];
@@ -38,18 +40,18 @@ class Router
             [$className, $methodName] = $handler;
 
             if (!class_exists($className)) {
-                throw new \Exception("Controller class {$className} not found");
+                throw new RouteException("Controller class {$className} not found");
             }
 
             $controller = new $className();
 
             if (!method_exists($controller, $methodName)) {
-                throw new \Exception("Method {$methodName} not found in {$className}");
+                throw new RouteException("Method {$methodName} not found in {$className}");
             }
 
             return $controller->$methodName();
         }
 
-        throw new \Exception("Invalid route handler");
+        throw new RouteException("Invalid route handler");
     }
 }
