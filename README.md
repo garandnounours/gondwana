@@ -31,12 +31,26 @@ A full-stack application for fetching accommodation rates from Gondwana Collecti
 
 ### Using GitHub Codespaces (Recommended)
 
-1. Open this repository in GitHub Codespaces
-2. The development environment will be automatically set up
-3. Dependencies will be installed automatically
-4. Start the API: `composer serve`
-5. Open `frontend/index.html` in the browser or use live-server
-6. API will be available at `http://localhost:8000`
+1. **Open this repository in GitHub Codespaces**
+2. **The development environment will be automatically set up**
+3. **Dependencies will be installed automatically**
+
+#### ⚠️ Important: Port Configuration Required
+
+**Before starting the application, you MUST configure port forwarding:**
+
+1. **Click on the "Ports" tab** in the bottom panel of Codespaces
+2. **Find port 8000** in the list (should appear when you start the API)
+3. **Right-click on port 8000** → Select **"Change Port Visibility"** → Choose **"Public"**
+4. **Repeat for port 3000** (if using a frontend server)
+
+**Why this is needed:** The frontend (port 3000/5500) needs to communicate with the backend (port 8000). Without public port forwarding, you'll get CORS errors.
+
+#### Starting the Application
+
+4. **Start the API**: `composer serve`
+5. **Open the frontend**: Navigate to the forwarded port URL (e.g., `https://your-codespace-3000.preview.app.github.dev`)
+6. **Test the application**: Fill out the booking form and submit
 
 ### Local Development
 
@@ -118,6 +132,30 @@ While SonarCloud may show Quality Gate as "Failed" due to coverage thresholds, t
 Test with the provided Unit Type IDs:
 - `-2147483637`
 - `-2147483456`
+
+## Troubleshooting
+
+### Codespaces Issues
+
+**Problem: "Failed to fetch" or CORS errors**
+- **Solution**: Ensure port 8000 is set to **Public** in the Ports tab
+- **Check**: Look for the forwarded URL in the Ports tab (e.g., `https://your-codespace-8000.preview.app.github.dev`)
+
+**Problem: Frontend can't connect to backend**
+- **Solution**: Both frontend and backend ports must be **Public**
+- **Check**: Verify both ports show "Public" status in the Ports tab
+
+**Problem: API returns "Connection refused"**
+- **Solution**: Make sure `composer serve` is running and port 8000 is forwarded
+- **Check**: Look for "PHP development server started" message in terminal
+
+### Common Issues
+
+**Problem: SonarCloud Quality Gate shows "Failed"**
+- **Note**: This is expected due to coverage thresholds. See Quality Assurance section above for explanation.
+
+**Problem: Tests fail with "No code coverage driver available"**
+- **Note**: This is normal in Codespaces. Tests still run and validate functionality.
 
 ## Author
 
