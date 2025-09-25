@@ -1,0 +1,47 @@
+{
+  "name": "Gondwana Booking API",
+  "image": "mcr.microsoft.com/devcontainers/php:8.1",
+  
+  "features": {
+    "ghcr.io/devcontainers/features/php:1": {
+      "version": "8.1",
+      "installComposer": true
+    },
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "18"
+    }
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.vscode-php-debug",
+        "bmewburn.vscode-intelephense-client",
+        "bradlc.vscode-tailwindcss",
+        "esbenp.prettier-vscode",
+        "ms-vscode.live-server"
+      ],
+      "settings": {
+        "php.suggest.basic": false,
+        "php.validate.executablePath": "/usr/local/bin/php",
+        "intelephense.files.maxSize": 5000000
+      }
+    }
+  },
+
+  "forwardPorts": [8000, 3000],
+  "portsAttributes": {
+    "8000": {
+      "label": "PHP API",
+      "onAutoForward": "notify"
+    },
+    "3000": {
+      "label": "Frontend",
+      "onAutoForward": "openPreview"
+    }
+  },
+
+  "postCreateCommand": "composer install",
+  
+  "remoteUser": "vscode"
+}

@@ -1,0 +1,17 @@
+{
+  "name": "gondwana-booking-frontend",
+  "version": "1.0.0",
+  "description": "Frontend for Gondwana Collections Booking API",
+  "scripts": {
+    "start": "echo 'Open frontend/index.html in your browser'",
+    "test": "echo 'No tests specified'"
+  },
+  "keywords": [
+    "booking",
+    "api",
+    "gondwana",
+    "rates"
+  ],
+  "author": "Gondwana Collections Applicant",
+  "license": "MIT"
+}
