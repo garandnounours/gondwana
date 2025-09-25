@@ -110,13 +110,16 @@ function validateForm() {
 function collectFormData() {
     const ageInputs = document.querySelectorAll('.age-input');
     const ages = Array.from(ageInputs).map(input => parseInt(input.value));
+    const propertySelect = document.getElementById('propertySelect');
+    const selectedOption = propertySelect.options[propertySelect.selectedIndex];
     
     return {
-        "Unit Name": document.getElementById('unitName').value,
+        "Unit Name": selectedOption.text.replace(/🏕️|⛰️/g, '').trim(), // Remove emojis for API
         "Arrival": document.getElementById('arrival').value,
         "Departure": document.getElementById('departure').value,
         "Occupants": parseInt(document.getElementById('occupants').value),
-        "Ages": ages
+        "Ages": ages,
+        "selectedUnitTypeId": parseInt(propertySelect.value) // Store selected ID
     };
 }
 
@@ -175,10 +178,17 @@ function createRateCard(result) {
     const availabilityText = result.availability ? 'Available' : 'Unavailable';
     const availabilityIcon = result.availability ? 'check-circle' : 'times-circle';
     
+    // Get property icon based on name
+    const propertyIcon = result.unitName.toLowerCase().includes('kalahari') ? '🏕️' : 
+                        result.unitName.toLowerCase().includes('klipspringer') ? '⛰️' : '🏨';
+    
     card.innerHTML = `
         <div class="rate-header">
-            <h3 class="rate-title">${escapeHtml(result.unitName)}</h3>
-            <div class="rate-price">${price}</div>
+            <h3 class="rate-title">
+                ${propertyIcon} ${escapeHtml(result.unitName)}
+                ${result.accommodationType ? `<br><small style="font-weight: 400; color: #A0522D; font-size: 0.9em;">${escapeHtml(result.accommodationType)}</small>` : ''}
+            </h3>
+            <div class="rate-price">N${price}</div>
         </div>
         
         <div class="availability-badge ${availabilityClass}">
@@ -194,13 +204,20 @@ function createRateCard(result) {
             
             <div class="rate-detail">
                 <i class="fas fa-users"></i>
-                <span>${result.occupants} occupant${result.occupants !== 1 ? 's' : ''}</span>
+                <span>${result.occupants} guest${result.occupants !== 1 ? 's' : ''}</span>
             </div>
             
             <div class="rate-detail">
-                <i class="fas fa-hashtag"></i>
-                <span>Unit Type ID: ${result.unitTypeId}</span>
+                <i class="fas fa-bed"></i>
+                <span>Accommodation Type</span>
             </div>
+            
+            ${result.availability ? `
+                <div class="rate-detail" style="color: #228B22; font-weight: 600; margin-top: 10px;">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Ready to book</span>
+                </div>
+            ` : ''}
         </div>
         
         ${result.error ? `

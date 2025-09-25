@@ -11,30 +11,31 @@
     <div class="container">
         <header class="header">
             <div class="logo">
-                <i class="fas fa-mountain"></i>
-                <h1>Gondwana Collections</h1>
+                <img src="logo/gondwana.svg" alt="Gondwana Collections Namibia" />
             </div>
-            <p class="subtitle">Find the perfect accommodation rates</p>
+            <p class="subtitle">Your Journey Begins Here</p>
         </header>
 
         <main class="main-content">
             <div class="booking-form-section">
-                <h2><i class="fas fa-search"></i> Search Accommodation Rates</h2>
+                <h2><i class="fas fa-map-marker-alt"></i> Find Your Perfect Stay</h2>
                 
                 <form id="bookingForm" class="booking-form">
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="unitName">
+                            <label for="propertySelect">
                                 <i class="fas fa-home"></i>
-                                Unit Name
+                                Select Property
                             </label>
-                            <input 
-                                type="text" 
-                                id="unitName" 
-                                name="unitName" 
-                                placeholder="e.g., Luxury Safari Lodge"
+                            <select 
+                                id="propertySelect" 
+                                name="propertySelect" 
                                 required
                             >
+                                <option value="">Choose your destination...</option>
+                                <option value="-2147483637">🏕️ Kalahari Farmhouse</option>
+                                <option value="-2147483456">⛰️ Klipspringer Camps</option>
+                            </select>
                         </div>
                     </div>
 
@@ -113,7 +114,7 @@
             </div>
 
             <div id="resultsSection" class="results-section hidden">
-                <h2><i class="fas fa-list"></i> Available Rates</h2>
+                <h2><i class="fas fa-bed"></i> Available Accommodations</h2>
                 <div id="resultsContainer" class="results-container">
                     <!-- Results will be populated here -->
                 </div>

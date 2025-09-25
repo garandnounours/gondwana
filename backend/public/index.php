@@ -1,4 +1,8 @@
 <?php
+// Increase execution time and memory limits for API calls
+ini_set('max_execution_time', 120);
+ini_set('memory_limit', '256M');
+set_time_limit(120);
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
