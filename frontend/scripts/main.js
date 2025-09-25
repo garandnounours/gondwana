@@ -1,5 +1,21 @@
-// Configuration
-const API_BASE_URL = 'http://localhost:8000';
+// Configuration - Auto-detect environment
+const API_BASE_URL = (() => {
+    const hostname = window.location.hostname;
+    
+    // GitHub Codespaces detection
+    if (hostname.includes('github.dev') || hostname.includes('codespaces')) {
+        // In Codespaces, replace the port in the current URL with 8000
+        const currentUrl = window.location.origin;
+        return currentUrl.replace(/:\d+$/, ':8000');
+    }
+    
+    // Local development
+    return 'http://localhost:8000';
+})();
+
+// Debug: Log the API URL being used
+console.log('🔧 API_BASE_URL:', API_BASE_URL);
+console.log('🌐 Current location:', window.location.href);
 
 // DOM Elements
 const bookingForm = document.getElementById('bookingForm');
