@@ -27,7 +27,7 @@ class ValidationService
         if (isset($data['Arrival']) && isset($data['Departure'])) {
             $arrival = $this->parseDate($data['Arrival'], 'd/m/Y');
             $departure = $this->parseDate($data['Departure'], 'd/m/Y');
-            
+
             if ($arrival && $departure && $departure <= $arrival) {
                 $errors[] = 'Departure date must be after arrival date';
             }

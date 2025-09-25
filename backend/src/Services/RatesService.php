@@ -25,9 +25,9 @@ class RatesService
             'verify' => false, // Skip SSL verification for dev environment
             'http_errors' => false // Don't throw exceptions on HTTP errors
         ]);
-        
+
         $this->gondwanaApiUrl = 'https://dev.gondwana-collection.com/Web-Store/Rates/Rates.php';
-        
+
         // Test Unit Type IDs provided in the assignment
         $this->unitTypeIds = [-2147483637, -2147483456];
     }
@@ -35,9 +35,9 @@ class RatesService
     public function fetchRates(array $bookingData): array
     {
         $results = [];
-        
+
         // If a specific unit type is selected, only process that one
-        $unitTypesToProcess = isset($bookingData['selectedUnitTypeId']) 
+        $unitTypesToProcess = isset($bookingData['selectedUnitTypeId'])
             ? [$bookingData['selectedUnitTypeId']]
             : $this->unitTypeIds;
 
@@ -45,12 +45,12 @@ class RatesService
             $maxRetries = 2;
             $retryCount = 0;
             $success = false;
-            
+
             while (!$success && $retryCount <= $maxRetries) {
                 try {
                     // Transform the payload
                     $transformedPayload = $this->transformPayload($bookingData, $unitTypeId);
-                    
+
                     // Make API call to Gondwana with improved error handling
                     $response = $this->httpClient->post($this->gondwanaApiUrl, [
                         'json' => $transformedPayload,
@@ -59,11 +59,11 @@ class RatesService
 
                     $statusCode = $response->getStatusCode();
                     $responseBody = $response->getBody()->getContents();
-                    
+
                     // Check if we got a successful response
                     if ($statusCode >= 200 && $statusCode < 300) {
                         $responseData = json_decode($responseBody, true);
-                        
+
                         if (json_last_error() === JSON_ERROR_NONE && $responseData !== null) {
                             // Process and format the response
                             $processedResult = $this->processGondwanaResponse($responseData, $bookingData, $unitTypeId);
@@ -75,7 +75,6 @@ class RatesService
                     } else {
                         throw new \Exception("HTTP {$statusCode}: " . substr($responseBody, 0, 200));
                     }
-
                 } catch (RequestException $e) {
                     $retryCount++;
                     if ($retryCount > $maxRetries) {
@@ -84,7 +83,7 @@ class RatesService
                         if ($e->hasResponse()) {
                             $errorMessage = 'API returned error: ' . $e->getResponse()->getStatusCode();
                         }
-                        
+
                         $results[] = [
                             'unitTypeId' => $unitTypeId,
                             'unitName' => $bookingData['Unit Name'],
@@ -176,7 +175,7 @@ class RatesService
         // Check if response contains rate information
         if (isset($responseData['Total Charge']) && is_numeric($responseData['Total Charge'])) {
             $totalCharge = (float) $responseData['Total Charge'];
-            
+
             if ($totalCharge > 0) {
                 // Convert from cents to dollars (Gondwana returns cents)
                 $rate = $totalCharge / 100;
@@ -185,7 +184,7 @@ class RatesService
                 // Zero charge might indicate unavailability or missing member code
                 $rate = 0;
                 $availability = false;
-                
+
                 // Check for error messages in legs
                 if (isset($responseData['Legs']) && is_array($responseData['Legs'])) {
                     foreach ($responseData['Legs'] as $leg) {
@@ -208,7 +207,7 @@ class RatesService
 
         // Extract real property name from API response
         $propertyName = $this->extractPropertyName($responseData, $originalData['Unit Name']);
-        
+
         return [
             'unitTypeId' => $unitTypeId,
             'unitName' => $propertyName['property'],
@@ -229,24 +228,25 @@ class RatesService
         // Look through legs to find the first valid Special Rate Description
         if (isset($responseData['Legs']) && is_array($responseData['Legs'])) {
             foreach ($responseData['Legs'] as $leg) {
-                if (isset($leg['Special Rate Description']) && 
+                if (
+                    isset($leg['Special Rate Description']) &&
                     $leg['Special Rate Description'] !== 'Not Found' &&
-                    !empty($leg['Special Rate Description'])) {
-                    
+                    !empty($leg['Special Rate Description'])
+                ) {
                     $description = $leg['Special Rate Description'];
-                    
+
                     // Extract from "* STANDARD RATE CAMPING - Klipspringer Camps"
                     if (preg_match('/\*\s*(.+?)\s*-\s*(.+?)\s*$/', $description, $matches)) {
                         $rateType = trim($matches[1]);
                         $propertyName = trim($matches[2]);
-                        
+
                         return [
                             'property' => $propertyName,
                             'type' => ucwords(strtolower($rateType)), // "Standard Rate Camping"
                             'full' => $propertyName . ' - ' . ucwords(strtolower($rateType))
                         ];
                     }
-                    
+
                     // If regex doesn't match, try to extract property name another way
                     if (strpos($description, ' - ') !== false) {
                         $parts = explode(' - ', $description);
@@ -261,7 +261,7 @@ class RatesService
                 }
             }
         }
-        
+
         // Fallback to user input
         return [
             'property' => $fallbackName,
@@ -275,9 +275,11 @@ class RatesService
         // Look through legs to find the first valid Special Rate Code
         if (isset($responseData['Legs']) && is_array($responseData['Legs'])) {
             foreach ($responseData['Legs'] as $leg) {
-                if (isset($leg['Special Rate Code']) && 
+                if (
+                    isset($leg['Special Rate Code']) &&
                     $leg['Special Rate Code'] !== 'Not_Found' &&
-                    !empty($leg['Special Rate Code'])) {
+                    !empty($leg['Special Rate Code'])
+                ) {
                     return $leg['Special Rate Code'];
                 }
             }
@@ -289,7 +291,7 @@ class RatesService
     {
         $arrivalFormatted = $this->convertDateFormat($arrival, 'd/m/Y', 'Y-m-d');
         $departureFormatted = $this->convertDateFormat($departure, 'd/m/Y', 'Y-m-d');
-        
+
         return "{$arrivalFormatted} to {$departureFormatted}";
     }
 }

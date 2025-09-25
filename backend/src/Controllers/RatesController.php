@@ -51,7 +51,6 @@ class RatesController
                 'success' => true,
                 'data' => $result
             ];
-
         } catch (\Exception $e) {
             http_response_code(500);
             return [
