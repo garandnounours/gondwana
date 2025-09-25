@@ -9,10 +9,10 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 use Gondwana\BookingApi\Router;
 use Gondwana\BookingApi\Controllers\RatesController;
 
-// Enable CORS for frontend development
+// Enable CORS for frontend development - COMPLETELY OPEN
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+header('Access-Control-Allow-Methods: *');
+header('Access-Control-Allow-Headers: *');
 header('Access-Control-Allow-Credentials: false');
 header('Access-Control-Max-Age: 86400');
 
