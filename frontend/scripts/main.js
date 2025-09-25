@@ -199,8 +199,12 @@ function createRateCard(result) {
     const availabilityIcon = result.availability ? 'check-circle' : 'times-circle';
     
     // Get property icon based on name
-    const propertyIcon = result.unitName.toLowerCase().includes('kalahari') ? '🏕️' : 
-                        result.unitName.toLowerCase().includes('klipspringer') ? '⛰️' : '🏨';
+    let propertyIcon = '🏨'; // Default icon
+    if (result.unitName.toLowerCase().includes('kalahari')) {
+        propertyIcon = '🏕️';
+    } else if (result.unitName.toLowerCase().includes('klipspringer')) {
+        propertyIcon = '⛰️';
+    }
     
     card.innerHTML = `
         <div class="rate-header">

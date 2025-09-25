@@ -18,6 +18,8 @@ class RatesController
 
     public function getRates(): array
     {
+        $response = ['success' => false];
+        
         try {
             // Get request body
             $input = file_get_contents('php://input');
@@ -25,39 +27,37 @@ class RatesController
 
             if (json_last_error() !== JSON_ERROR_NONE) {
                 http_response_code(400);
-                return [
+                $response = [
                     'success' => false,
                     'error' => 'Invalid JSON',
                     'message' => 'Request body must be valid JSON'
                 ];
-            }
-
-            // Validate input
-            $validation = $this->validationService->validateBookingRequest($data);
-            if (!$validation['valid']) {
+            } elseif (!$this->validationService->validateBookingRequest($data)['valid']) {
                 http_response_code(400);
-                return [
+                $validation = $this->validationService->validateBookingRequest($data);
+                $response = [
                     'success' => false,
                     'error' => 'Validation Error',
                     'message' => 'Invalid request data',
                     'details' => $validation['errors']
                 ];
+            } else {
+                // Process the request
+                $result = $this->ratesService->fetchRates($data);
+                $response = [
+                    'success' => true,
+                    'data' => $result
+                ];
             }
-
-            // Process the request
-            $result = $this->ratesService->fetchRates($data);
-
-            return [
-                'success' => true,
-                'data' => $result
-            ];
         } catch (\Exception $e) {
             http_response_code(500);
-            return [
+            $response = [
                 'success' => false,
                 'error' => 'Processing Error',
                 'message' => $e->getMessage()
             ];
         }
+        
+        return $response;
     }
 }

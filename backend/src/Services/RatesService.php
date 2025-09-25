@@ -10,6 +10,15 @@ class RatesService
     private Client $httpClient;
     private string $gondwanaApiUrl;
     private array $unitTypeIds;
+    
+    // Constants for repeated literals
+    private const UNIT_NAME_KEY = self::UNIT_NAME_KEY;
+    private const ACCOMMODATION_SUFFIX = self::ACCOMMODATION_SUFFIX;
+    private const DATE_FORMAT_DM_Y = self::DATE_FORMAT_DM_Y;
+    private const TOTAL_CHARGE_KEY = self::TOTAL_CHARGE_KEY;
+    private const ERROR_MESSAGE_KEY = self::ERROR_MESSAGE_KEY;
+    private const SPECIAL_RATE_DESCRIPTION_KEY = self::SPECIAL_RATE_DESCRIPTION_KEY;
+    private const SPECIAL_RATE_CODE_KEY = self::SPECIAL_RATE_CODE_KEY;
 
     public function __construct()
     {
@@ -86,9 +95,9 @@ class RatesService
 
                         $results[] = [
                             'unitTypeId' => $unitTypeId,
-                            'unitName' => $bookingData['Unit Name'],
+                            'unitName' => $bookingData[self::UNIT_NAME_KEY],
                             'accommodationType' => 'Accommodation',
-                            'fullName' => $bookingData['Unit Name'] . ' - Accommodation',
+                            'fullName' => $bookingData[self::UNIT_NAME_KEY] . self::ACCOMMODATION_SUFFIX,
                             'error' => $errorMessage,
                             'rate' => null,
                             'dateRange' => $this->formatDateRange($bookingData['Arrival'], $bookingData['Departure']),
@@ -105,9 +114,9 @@ class RatesService
                         // Handle other errors
                         $results[] = [
                             'unitTypeId' => $unitTypeId,
-                            'unitName' => $bookingData['Unit Name'],
+                            'unitName' => $bookingData[self::UNIT_NAME_KEY],
                             'accommodationType' => 'Accommodation',
-                            'fullName' => $bookingData['Unit Name'] . ' - Accommodation',
+                            'fullName' => $bookingData[self::UNIT_NAME_KEY] . self::ACCOMMODATION_SUFFIX,
                             'error' => 'Service temporarily unavailable',
                             'rate' => null,
                             'dateRange' => $this->formatDateRange($bookingData['Arrival'], $bookingData['Departure']),
@@ -128,8 +137,8 @@ class RatesService
     private function transformPayload(array $inputData, int $unitTypeId): array
     {
         // Convert date format from dd/mm/yyyy to yyyy-mm-dd
-        $arrival = $this->convertDateFormat($inputData['Arrival'], 'd/m/Y', 'Y-m-d');
-        $departure = $this->convertDateFormat($inputData['Departure'], 'd/m/Y', 'Y-m-d');
+        $arrival = $this->convertDateFormat($inputData['Arrival'], self::DATE_FORMAT_DM_Y, 'Y-m-d');
+        $departure = $this->convertDateFormat($inputData['Departure'], self::DATE_FORMAT_DM_Y, 'Y-m-d');
 
         // Transform ages to guest objects with age groups
         $guests = [];
@@ -164,7 +173,6 @@ class RatesService
         $rate = null;
         $availability = false;
         $error = null;
-        $rateCode = null;
         $locationId = null;
 
         // Extract basic info
@@ -173,8 +181,8 @@ class RatesService
         }
 
         // Check if response contains rate information
-        if (isset($responseData['Total Charge']) && is_numeric($responseData['Total Charge'])) {
-            $totalCharge = (float) $responseData['Total Charge'];
+        if (isset($responseData[self::TOTAL_CHARGE_KEY]) && is_numeric($responseData[self::TOTAL_CHARGE_KEY])) {
+            $totalCharge = (float) $responseData[self::TOTAL_CHARGE_KEY];
 
             if ($totalCharge > 0) {
                 // Convert from cents to dollars (Gondwana returns cents)
@@ -190,8 +198,8 @@ class RatesService
                     foreach ($responseData['Legs'] as $leg) {
                         if (isset($leg['Guests']) && is_array($leg['Guests'])) {
                             foreach ($leg['Guests'] as $guest) {
-                                if (isset($guest['Error Message']) && !empty($guest['Error Message'])) {
-                                    $error = $guest['Error Message'];
+                                if (isset($guest[self::ERROR_MESSAGE_KEY]) && !empty($guest[self::ERROR_MESSAGE_KEY])) {
+                                    $error = $guest[self::ERROR_MESSAGE_KEY];
                                     break 2; // Break out of both loops
                                 }
                             }
@@ -206,7 +214,7 @@ class RatesService
         }
 
         // Extract real property name from API response
-        $propertyName = $this->extractPropertyName($responseData, $originalData['Unit Name']);
+        $propertyName = $this->extractPropertyName($responseData, $originalData[self::UNIT_NAME_KEY]);
 
         return [
             'unitTypeId' => $unitTypeId,
@@ -229,11 +237,11 @@ class RatesService
         if (isset($responseData['Legs']) && is_array($responseData['Legs'])) {
             foreach ($responseData['Legs'] as $leg) {
                 if (
-                    isset($leg['Special Rate Description']) &&
-                    $leg['Special Rate Description'] !== 'Not Found' &&
-                    !empty($leg['Special Rate Description'])
+                    isset($leg[self::SPECIAL_RATE_DESCRIPTION_KEY]) &&
+                    $leg[self::SPECIAL_RATE_DESCRIPTION_KEY] !== 'Not Found' &&
+                    !empty($leg[self::SPECIAL_RATE_DESCRIPTION_KEY])
                 ) {
-                    $description = $leg['Special Rate Description'];
+                    $description = $leg[self::SPECIAL_RATE_DESCRIPTION_KEY];
 
                     // Extract from "* STANDARD RATE CAMPING - Klipspringer Camps"
                     if (preg_match('/\*\s*(.+?)\s*-\s*(.+?)\s*$/', $description, $matches)) {
@@ -266,7 +274,7 @@ class RatesService
         return [
             'property' => $fallbackName,
             'type' => 'Accommodation',
-            'full' => $fallbackName . ' - Accommodation'
+            'full' => $fallbackName . self::ACCOMMODATION_SUFFIX
         ];
     }
 
@@ -276,11 +284,11 @@ class RatesService
         if (isset($responseData['Legs']) && is_array($responseData['Legs'])) {
             foreach ($responseData['Legs'] as $leg) {
                 if (
-                    isset($leg['Special Rate Code']) &&
-                    $leg['Special Rate Code'] !== 'Not_Found' &&
-                    !empty($leg['Special Rate Code'])
+                    isset($leg[self::SPECIAL_RATE_CODE_KEY]) &&
+                    $leg[self::SPECIAL_RATE_CODE_KEY] !== 'Not_Found' &&
+                    !empty($leg[self::SPECIAL_RATE_CODE_KEY])
                 ) {
-                    return $leg['Special Rate Code'];
+                    return $leg[self::SPECIAL_RATE_CODE_KEY];
                 }
             }
         }
@@ -289,8 +297,8 @@ class RatesService
 
     private function formatDateRange(string $arrival, string $departure): string
     {
-        $arrivalFormatted = $this->convertDateFormat($arrival, 'd/m/Y', 'Y-m-d');
-        $departureFormatted = $this->convertDateFormat($departure, 'd/m/Y', 'Y-m-d');
+        $arrivalFormatted = $this->convertDateFormat($arrival, self::DATE_FORMAT_DM_Y, 'Y-m-d');
+        $departureFormatted = $this->convertDateFormat($departure, self::DATE_FORMAT_DM_Y, 'Y-m-d');
 
         return "{$arrivalFormatted} to {$departureFormatted}";
     }
