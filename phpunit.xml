@@ -13,11 +13,11 @@
         </testsuite>
     </testsuites>
 
-    <filter>
-        <whitelist>
+    <coverage>
+        <include>
             <directory suffix=".php">backend/src</directory>
-        </whitelist>
-    </filter>
+        </include>
+    </coverage>
 
     <logging>
         <junit outputFile="phpunit-report.xml"/>
