@@ -11,15 +11,26 @@ use Gondwana\BookingApi\Controllers\RatesController;
 
 // Enable CORS for frontend development
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization');
-header('Content-Type: application/json');
+header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+header('Access-Control-Allow-Credentials: false');
+header('Access-Control-Max-Age: 86400');
 
-// Handle preflight OPTIONS requests
+// Debug: Log request details
+error_log("Request Method: " . $_SERVER['REQUEST_METHOD']);
+error_log("Origin: " . ($_SERVER['HTTP_ORIGIN'] ?? 'Not set'));
+error_log("Request URI: " . $_SERVER['REQUEST_URI']);
+
+// Handle preflight OPTIONS requests first
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    error_log("Handling OPTIONS preflight request");
     http_response_code(200);
+    header('Content-Length: 0');
     exit();
 }
+
+// Set content type after OPTIONS check
+header('Content-Type: application/json');
 
 try {
     $router = new Router();
