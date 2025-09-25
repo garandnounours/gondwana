@@ -5,8 +5,8 @@ namespace Gondwana\BookingApi\Services;
 class ValidationService
 {
     // Constants for repeated literals
-    private const UNIT_NAME_KEY = self::UNIT_NAME_KEY;
-    private const DATE_FORMAT_DM_Y = self::DATE_FORMAT_DM_Y;
+    private const UNIT_NAME_KEY = 'Unit Name';
+    private const DATE_FORMAT_DM_Y = 'd/m/Y';
     
     public function validateBookingRequest(array $data): array
     {

@@ -12,13 +12,13 @@ class RatesService
     private array $unitTypeIds;
     
     // Constants for repeated literals
-    private const UNIT_NAME_KEY = self::UNIT_NAME_KEY;
-    private const ACCOMMODATION_SUFFIX = self::ACCOMMODATION_SUFFIX;
-    private const DATE_FORMAT_DM_Y = self::DATE_FORMAT_DM_Y;
-    private const TOTAL_CHARGE_KEY = self::TOTAL_CHARGE_KEY;
-    private const ERROR_MESSAGE_KEY = self::ERROR_MESSAGE_KEY;
-    private const SPECIAL_RATE_DESCRIPTION_KEY = self::SPECIAL_RATE_DESCRIPTION_KEY;
-    private const SPECIAL_RATE_CODE_KEY = self::SPECIAL_RATE_CODE_KEY;
+    private const UNIT_NAME_KEY = 'Unit Name';
+    private const ACCOMMODATION_SUFFIX = ' - Accommodation';
+    private const DATE_FORMAT_DM_Y = 'd/m/Y';
+    private const TOTAL_CHARGE_KEY = 'Total Charge';
+    private const ERROR_MESSAGE_KEY = 'Error Message';
+    private const SPECIAL_RATE_DESCRIPTION_KEY = 'Special Rate Description';
+    private const SPECIAL_RATE_CODE_KEY = 'Special Rate Code';
 
     public function __construct()
     {

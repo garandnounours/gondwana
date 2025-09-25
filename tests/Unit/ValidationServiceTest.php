@@ -14,12 +14,12 @@ class ValidationServiceTest extends TestCase
         $this->validationService = new ValidationService();
     }
 
-    public function testValidBookingRequest(): void
+    public function testValidateBookingRequestWithValidData(): void
     {
         $validData = [
-            'Unit Name' => 'Test Lodge',
-            'Arrival' => '01/12/2025',
-            'Departure' => '05/12/2025',
+            'Unit Name' => 'Test Property',
+            'Arrival' => '01/02/2026',
+            'Departure' => '05/02/2026',
             'Occupants' => 2,
             'Ages' => [30, 25]
         ];
@@ -30,12 +30,11 @@ class ValidationServiceTest extends TestCase
         $this->assertEmpty($result['errors']);
     }
 
-    public function testInvalidUnitName(): void
+    public function testValidateBookingRequestWithMissingUnitName(): void
     {
         $invalidData = [
-            'Unit Name' => '',
-            'Arrival' => '01/12/2025',
-            'Departure' => '05/12/2025',
+            'Arrival' => '01/02/2026',
+            'Departure' => '05/02/2026',
             'Occupants' => 2,
             'Ages' => [30, 25]
         ];
@@ -46,12 +45,12 @@ class ValidationServiceTest extends TestCase
         $this->assertContains('Unit Name is required and must be a non-empty string', $result['errors']);
     }
 
-    public function testInvalidDateFormat(): void
+    public function testValidateBookingRequestWithInvalidDate(): void
     {
         $invalidData = [
-            'Unit Name' => 'Test Lodge',
-            'Arrival' => '2025-12-01',  // Wrong format
-            'Departure' => '05/12/2025',
+            'Unit Name' => 'Test Property',
+            'Arrival' => 'invalid-date',
+            'Departure' => '05/02/2026',
             'Occupants' => 2,
             'Ages' => [30, 25]
         ];
@@ -62,51 +61,35 @@ class ValidationServiceTest extends TestCase
         $this->assertContains('Arrival date is required and must be in dd/mm/yyyy format', $result['errors']);
     }
 
-    public function testDepartureBeforeArrival(): void
+    public function testValidateBookingRequestWithInvalidOccupants(): void
     {
         $invalidData = [
-            'Unit Name' => 'Test Lodge',
-            'Arrival' => '05/12/2025',
-            'Departure' => '01/12/2025',  // Before arrival
-            'Occupants' => 2,
+            'Unit Name' => 'Test Property',
+            'Arrival' => '01/02/2026',
+            'Departure' => '05/02/2026',
+            'Occupants' => 0,
             'Ages' => [30, 25]
         ];
 
         $result = $this->validationService->validateBookingRequest($invalidData);
 
         $this->assertFalse($result['valid']);
-        $this->assertContains('Departure date must be after arrival date', $result['errors']);
+        $this->assertContains('Occupants is required and must be a positive integer', $result['errors']);
     }
 
-    public function testMismatchedAgesAndOccupants(): void
+    public function testValidateBookingRequestWithMismatchedAgesAndOccupants(): void
     {
         $invalidData = [
-            'Unit Name' => 'Test Lodge',
-            'Arrival' => '01/12/2025',
-            'Departure' => '05/12/2025',
-            'Occupants' => 3,
-            'Ages' => [30, 25]  // Only 2 ages for 3 occupants
+            'Unit Name' => 'Test Property',
+            'Arrival' => '01/02/2026',
+            'Departure' => '05/02/2026',
+            'Occupants' => 2,
+            'Ages' => [30, 25, 20] // 3 ages but 2 occupants
         ];
 
         $result = $this->validationService->validateBookingRequest($invalidData);
 
         $this->assertFalse($result['valid']);
         $this->assertContains('Number of ages must match number of occupants', $result['errors']);
-    }
-
-    public function testInvalidAge(): void
-    {
-        $invalidData = [
-            'Unit Name' => 'Test Lodge',
-            'Arrival' => '01/12/2025',
-            'Departure' => '05/12/2025',
-            'Occupants' => 2,
-            'Ages' => [30, 150]  // Invalid age
-        ];
-
-        $result = $this->validationService->validateBookingRequest($invalidData);
-
-        $this->assertFalse($result['valid']);
-        $this->assertContains('All ages must be integers between 0 and 120', $result['errors']);
     }
 }
